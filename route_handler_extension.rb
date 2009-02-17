@@ -6,10 +6,14 @@ class RouteHandlerExtension < Radiant::Extension
               "some special page and send some special params to there."
   
   define_routes do |map|
-    map.connect '/*path', :controller => 'route_handler', :action => 'index'
+    map.namespace :admin, :member => { :remove => :get } do |admin|
+      admin.resources :route_handlers
+    end
+    map.connect '/q/*path', :controller => 'route_handler', :action => 'index'
   end
   
   def activate
+    admin.tabs.add "Route Handlers", "/admin/route_handlers", :after => "Layouts" 
   end
   
   def deactivate

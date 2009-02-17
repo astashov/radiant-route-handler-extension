@@ -1,0 +1,13 @@
+%h1 List of Route Handlers
+%p= link_to "Create Route Handler", new_admin_route_handler_path
+%table
+  %tr
+    %th URL
+    %th Description
+    %th Destroy
+  - models.each do |model|
+    %tr
+      %td= link_to(h(model.url), edit_admin_route_handler_path(model))
+      %td= h(model.description)
+      %td= link_to "Destroy", remove_admin_route_handler_path(model)
+

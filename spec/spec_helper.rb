@@ -9,7 +9,10 @@ unless defined? RADIANT_ROOT
     require "#{File.expand_path(File.dirname(__FILE__) + "/../../../../")}/config/environment"
   end
 end
+require File.expand_path(File.dirname(__FILE__) + "/route_handler_spec_helpers")
 require "#{RADIANT_ROOT}/spec/spec_helper"
+
+include RouteHandlerSpecHelpers
 
 Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true

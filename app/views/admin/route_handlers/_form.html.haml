@@ -1,0 +1,14 @@
+- form_for [:admin, model] do |f|
+  %ul
+    %li
+      %label{ :for => "route_handler_url" } URL
+      = f.text_field 'url'
+    %li
+      %label{ :for => "route_handler_transformation_rules" } Transformation rules
+      = f.text_area 'transformation_rules'
+    %li
+      %label{ :for => "route_handler_description" } Description
+      = f.text_field 'description'
+    %li= save_model_button(model)
+    %li= link_to "Cancel", admin_route_handlers_path
+      
