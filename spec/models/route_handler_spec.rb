@@ -14,4 +14,11 @@ describe RouteHandler do
     route_handler.errors.on(:url).should_not be_nil
   end
   
+  it "should match path" do
+    handler = RouteHandler.create!(:url => '(\w+)\/(\w+)\/(\w+)')
+    RouteHandler.match('daily/overview/today').should == handler
+    RouteHandler.match(%w{some some some}).should == handler
+    RouteHandler.match('fengshui/love').should be_nil
+  end
+  
 end
