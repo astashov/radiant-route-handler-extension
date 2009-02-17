@@ -6,7 +6,8 @@ describe Admin::RouteHandlersController do
     @route_handler = RouteHandler.create!(
       :url => "my_url", 
       :transformation_rules => "my_rules",
-      :description => "my_description"
+      :description => "my_description",
+      :fields => "my_fields"
     )
     @user = User.create!(
       :name => "Administrator", 
@@ -46,7 +47,7 @@ describe Admin::RouteHandlersController do
   
   it "should create item" do
     lambda do
-      post :create, :route_handler => { :url => "my_url2", :description => "desc2" }
+      post :create, :route_handler => { :url => "my_url2", :description => "desc2", :fields => "myfields" }
       response.should redirect_to(admin_route_handlers_path)
     end.should change(RouteHandler, :count).by(1)
   end
