@@ -1,10 +1,11 @@
 class RouteHandler < ActiveRecord::Base
   
-  validates_presence_of :url
-  validates_presence_of :fields
+  validates_presence_of :url, :fields, :page_id
   
   attr_accessor :path_params
   attr_reader :transformed_params
+  
+  belongs_to :page
   
   
   def self.match(path_params)

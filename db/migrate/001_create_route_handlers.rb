@@ -5,9 +5,12 @@ class CreateRouteHandlers < ActiveRecord::Migration
       t.string :fields, :null => false
       t.text :transformation_rules
       t.string :description
-
+      t.integer :page_id, :null => false
+      
       t.timestamps
     end
+    
+    add_index(:route_handlers, :page_id)
   end
 
   def self.down

@@ -3,11 +3,18 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 describe Admin::RouteHandlersController do
   integrate_views
   before do
+    @page = Page.create!(
+      :title => 'New Page',
+      :slug => 'page',
+      :breadcrumb => 'New Page',
+      :status_id => '1'
+    )
     @route_handler = RouteHandler.create!(
       :url => "my_url", 
       :transformation_rules => "my_rules",
       :description => "my_description",
-      :fields => "my_fields"
+      :fields => "my_fields",
+      :page => @page
     )
     @user = User.create!(
       :name => "Administrator", 
@@ -47,13 +54,15 @@ describe Admin::RouteHandlersController do
   
   it "should create item" do
     lambda do
-      post :create, :route_handler => { :url => "my_url2", :description => "desc2", :fields => "myfields" }
+      post :create, :route_handler => { 
+        :url => "my_url2", :description => "desc2", :fields => "myfields", :page_id => @page.id
+      }
       response.should redirect_to(admin_route_handlers_path)
     end.should change(RouteHandler, :count).by(1)
   end
   
   it "should update item" do
-    put :update, :id => @route_handler.id, :route_handler => { :url => "my_url2" }
+    put :update, :id => @route_handler.id, :route_handler => { :url => "my_url2", :page_id => @page.id }
     response.should redirect_to(admin_route_handlers_path)
     @route_handler.reload.url.should == "my_url2"
   end

@@ -10,6 +10,9 @@
       %label{ :for => "route_handler_transformation_rules" } Transformation rules
       = f.text_area 'transformation_rules'
     %li
+      %label{ :for => "route_handler_page_id" } Page
+      = f.select 'page_id', Page.find(:all).map {|c| [ h(c.title), c.id ]}
+    %li
       %label{ :for => "route_handler_description" } Description
       = f.text_field 'description'
     %li= save_model_button(model)
