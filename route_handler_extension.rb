@@ -6,7 +6,7 @@ class RouteHandlerExtension < Radiant::Extension
               "some special page and send some special params to there."
   
   define_routes do |map|
-    map.connect '*', :controller => 'route_handler', :action => 'index'
+    map.connect '/*path', :controller => 'route_handler', :action => 'index'
   end
   
   def activate
