@@ -36,39 +36,6 @@ describe RouteHandler do
     }
     RouteHandler.match(%w{some some some}).should == handler
     RouteHandler.match('fengshui/love').should be_nil
-  end
-  
-  it "should correctly transform special parameters" do
-    RouteHandler.create!(
-      :url => '([a-zA-Z\-_]+)\/([a-zA-Z\-_]+)\/([a-zA-Z\-_]+)\/([a-zA-Z\-_]+)', 
-      :fields => 'frequency,name,sign,date', 
-      :transformation_rules => rules,
-      :page => @page
-    )
-    handler = RouteHandler.match('daily/cosmic-calendar/aries/today')
-    handler.transform!
-    handler.transformed_params.should == { 
-      :content_type => 'cosmic_calendar',
-      :sign => 'aries',
-      :date => (Date.today).strftime("%m/%d/%Y")
-    }
-  end
-  
-  it "should correctly transform usual parameters" do
-    RouteHandler.create!(
-      :url => '(\w+)\/(\w+)\/(\w+)\/(\w+)', 
-      :fields => 'frequency,name,sign,date', 
-      :transformation_rules => rules,
-      :page => @page
-    )
-    handler = RouteHandler.match('daily/overview/taurus/yesterday')
-    handler.transform!
-    handler.transformed_params.should == { 
-      :content_type => 'daily_overview',
-      :sign => 'taurus',
-      :date => (Date.today - 1.day).strftime("%m/%d/%Y")
-    }
-  end
-  
+  end  
 
 end

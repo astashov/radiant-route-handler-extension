@@ -30,23 +30,6 @@ class RouteHandler < ActiveRecord::Base
   end
   
   
-  def transform!
-    @transformed_params ||= {}
-    rules = YAML.load(self.transformation_rules)
-    transform_date! if @path_params[:date]
-    rules.each do |param, param_rules|
-      param_rules.each do |rule|
-        result = rule.delete('result')
-        if should_use_current_rule?(rule)
-          result = substitute_variables_in_result(result)
-          @transformed_params[param.to_sym] = result
-          break
-        end
-      end
-    end
-  end
-  
-  
   private
   
     def self.params_conversion(params)
@@ -56,37 +39,5 @@ class RouteHandler < ActiveRecord::Base
       end
     end
     
-    
-    def transform_date!
-      given_date = @path_params[:date]
-      date = case
-      when given_date == 'today'; Date.today
-      when given_date == 'tomorrow'; Date.today + 1.day
-      when given_date == 'yesterday'; Date.today - 1.day
-      else; Date.civil(given_date[0..3].to_i, given_date[4..5].to_i, given_date[6..7].to_i)
-      end
-      @transformed_params[:date] = date.strftime("%m/%d/%Y")
-    end
-    
-    
-    def substitute_variables_in_result(result)
-      result.gsub!(/:([a-zA-Z]+)/) do |s|
-        @path_params[$1.to_sym]
-      end
-      result.gsub('-', '_')
-    end
-    
-    
-    def should_use_current_rule?(rule)
-      condition = true
-      rule.each do |key, value|
-        if value == '_any_'
-          condition &&= true
-        else
-          condition &&= @path_params[key.to_sym] == value
-        end
-      end
-      condition
-    end
   
 end

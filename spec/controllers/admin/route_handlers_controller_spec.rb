@@ -11,7 +11,6 @@ describe Admin::RouteHandlersController do
     )
     @route_handler = RouteHandler.create!(
       :url => "my_url", 
-      :transformation_rules => "my_rules",
       :description => "my_description",
       :fields => "my_fields",
       :page => @page

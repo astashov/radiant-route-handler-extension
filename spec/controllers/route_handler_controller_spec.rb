@@ -13,7 +13,6 @@ describe RouteHandlerController do
     )
     @route_handler = RouteHandler.create!(
       :url => '^(\w+)\/(\w+)$', 
-      :transformation_rules => "",
       :description => "",
       :fields => "name, date",
       :page => @page
