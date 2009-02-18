@@ -14,6 +14,8 @@ class RouteHandlerExtension < Radiant::Extension
   
   def activate
     admin.tabs.add "Route Handlers", "/admin/route_handlers", :after => "Layouts" 
+    # We will store extracted from path params here
+    Page.class_eval { attr_accessor :route_handler_params }
   end
   
   def deactivate

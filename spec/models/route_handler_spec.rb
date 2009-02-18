@@ -29,7 +29,7 @@ describe RouteHandler do
     handler = RouteHandler.create!(:url => '(\w+)\/(\w+)\/(\w+)', :fields => 'frequency,name,date', :page => @page)
     matched_handler = RouteHandler.match('daily/overview/today')
     matched_handler.should == handler
-    matched_handler.path_params.should == {
+    matched_handler.page.route_handler_params.should == {
       :frequency => 'daily',
       :name => 'overview', 
       :date => 'today'

@@ -2,8 +2,7 @@ class RouteHandler < ActiveRecord::Base
   
   validates_presence_of :url, :fields, :page_id
   
-  attr_accessor :path_params
-  attr_reader :transformed_params
+  cattr_accessor :path_params
   
   belongs_to :page
   
@@ -23,9 +22,9 @@ class RouteHandler < ActiveRecord::Base
   
   
   def set_path_params(params)
-    self.path_params = {}
+    self.page.route_handler_params ||= {}
     fields.each_with_index do |field, index|
-      self.path_params[field.to_sym] = params[index]
+      self.page.route_handler_params[field.to_sym] = params[index]
     end
   end
   

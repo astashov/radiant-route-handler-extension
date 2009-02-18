@@ -24,6 +24,7 @@ describe RouteHandlerController do
     response.should be_success
     assigns(:route_handler).should == @route_handler
     response.body.should include('Hi there!')
+    assigns(:page).route_handler_params.should == { :name => 'dailyoverview', :date => 'today' }
   end
   
   it "should show 404 error if there are no matched route handlers" do
