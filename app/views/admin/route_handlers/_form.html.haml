@@ -1,20 +1,20 @@
 - form_for [:admin, model] do |f|
-  %ul
-    %li
+  .form-area
+    %p.title
       %label{ :for => "route_handler_url" } URL
-      = f.text_field 'url'
-    %li
+      = f.text_field 'url', :class => "textbox"
+    %p.title
       %label{ :for => "route_handler_fields" } Fields
-      = f.text_field 'fields'
-    %li
+      = f.text_field 'fields', :class => "textbox"
+    %p.title
+      %label{ :for => "route_handler_description" } Description
+      = f.text_field 'description', :class => "textbox", :style => "width: 100%;"
+    %p.content
       %label{ :for => "route_handler_transformation_rules" } Transformation rules
-      = f.text_area 'transformation_rules'
-    %li
+      = f.text_area 'transformation_rules', :class => "textarea"
+    %p
       %label{ :for => "route_handler_page_id" } Page
       = f.select 'page_id', Page.find(:all).map {|c| [ h(c.title), c.id ]}
-    %li
-      %label{ :for => "route_handler_description" } Description
-      = f.text_field 'description'
-    %li= save_model_button(model)
-    %li= link_to "Cancel", admin_route_handlers_path
+    %p= save_model_button(model)
+    %p= link_to "Cancel", admin_route_handlers_path
       
