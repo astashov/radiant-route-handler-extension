@@ -21,7 +21,7 @@ describe SiteController do
   end
   
   it "should open usual page" do
-    get :show_page, :url => [ '' ]
+    get :show_page, :url => [ 'page' ]
     response.should be_success
     response.body.should include('Hi there!')
     assigns(:route_handler).should be_nil
