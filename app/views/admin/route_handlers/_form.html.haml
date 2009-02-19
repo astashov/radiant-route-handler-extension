@@ -11,7 +11,7 @@
       = f.text_field 'description', :class => "textbox", :style => "width: 100%;"
     %p
       %label{ :for => "route_handler_page_id" } Page
-      = f.select 'page_id', Page.find(:all).map {|c| [ h(c.title), c.id ]}
+      = f.select 'page_id', Page.find(:all, :order => "title").map {|c| [ h(c.title), c.id ]}
     %p= save_model_button(model)
     %p= link_to "Cancel", admin_route_handlers_path
       
