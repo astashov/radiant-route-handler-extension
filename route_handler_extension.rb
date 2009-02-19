@@ -9,13 +9,13 @@ class RouteHandlerExtension < Radiant::Extension
     map.namespace :admin, :member => { :remove => :get } do |admin|
       admin.resources :route_handlers
     end
-    map.connect '/q/*path', :controller => 'route_handler', :action => 'index'
   end
   
   def activate
     admin.tabs.add "Route Handlers", "/admin/route_handlers", :after => "Layouts" 
     # We will store extracted from path params here
     Page.class_eval { attr_accessor :route_handler_params }
+    SiteController.send :include, RouteHandler::SiteControllerExtensions
   end
   
   def deactivate
