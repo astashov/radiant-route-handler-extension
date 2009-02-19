@@ -7,8 +7,18 @@ module RouteHandler::SiteControllerExtensions
         def find_page_with_route_handler(*args)
           page = find_page_without_route_handler(*args)
           unless page
+            logger.info("\033[1;33mWe weren't be able to find static page, trying to find route handler\033[0m")
             @route_handler = RouteHandler.match(params[:url])
-            page = @route_handler.page if @route_handler
+            if @route_handler
+              logger.info("\033[1;32mRoute Handler was found, use its page\033[0m")
+              page = @route_handler.page
+            else
+              logger.debug(
+                "\033[1;31mRoute Handler wasn't found\nYour url: " +
+                "#{params[:url].to_a.join("/")}\nAvailabled Route Handlers:\n" + 
+                "#{RouteHandler.find(:all).map(&:url).join("\n")}\033[0m"
+              )
+            end
           end
           page
         end
