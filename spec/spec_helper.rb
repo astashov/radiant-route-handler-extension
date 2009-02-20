@@ -1,3 +1,7 @@
+module PageVersioning
+  @enable_versioning = true
+end
+
 unless defined? RADIANT_ROOT
   ENV["RAILS_ENV"] = "test"
   case

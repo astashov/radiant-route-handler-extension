@@ -1,4 +1,3 @@
-module PageVersioning; @enable_versioning = true; end
 require File.dirname(__FILE__) + "/../../spec_helper"
 
 describe Admin::PagesController do
