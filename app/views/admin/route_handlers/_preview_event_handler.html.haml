@@ -1,0 +1,62 @@
+:javascript
+  var switcher = new Element('input', {
+    type: 'checkbox',
+    name: 'set_route_handler_params',
+    id: 'set_route_handler_params',
+    value: '1'
+  });
+  var label = new Element('label', { 'for': 'set_route_handler_params' });
+  var p = new Element('p');
+  p.appendChild(label);
+  p.appendChild(switcher);
+  label.appendChild(document.createTextNode('Do you want to set Route Handler params for the preview?'));
+  $('preview_button_block').appendChild(p);
+
+  Event.observe('preview_button', 'click', function(submit) {
+    if($('set_route_handler_params').checked == true) {
+      var width = 520;
+      var height = 130;
+      var left = ((window.innerWidth / 2) + window.pageXOffset - (width / 2));  
+      var top = ((window.innerHeight / 2) + window.pageYOffset - (height / 2));
+      var wrapper = new Element('div', { 
+        style: "position: absolute; top: " + top + "px; left: " + left + "px; width: " + width + "px; " + 
+               "height: " + height + "px; border: 1px solid #cdc295; background: #fdfbf2;",
+        id: "route_handler_params_window"
+      });
+      var div = new Element('div', { style: "padding: 15px;" });
+      var input = new Element('input', {
+        type: "text",
+        name: "route_handler_params",
+        id: "route_handler_params_input",
+        style: "font-family:Georgia,serid;font-size:130%;width:270px;margin-right:10px;"
+      });
+      var button = new Element('input', { 
+        type: "submit", 
+        name: "preview", 
+        value: "Save and Preview", 
+        style: "font-size: 130%; width: 180px;"
+      });
+      var close = new Element('a', {
+        href: '#',
+        onclick: "$('route_handler_params_window').parentNode.removeChild($('route_handler_params_window')); return false;",
+        style: "position: absolute; top:2px; right:5px"
+      });
+      var p = new Element('p');
+      var form = this.form;
+
+      form.appendChild(wrapper);
+      wrapper.appendChild(div);
+      wrapper.appendChild(close);
+      div.appendChild(p);
+      div.appendChild(input);
+      div.appendChild(button);
+      p.appendChild(document.createTextNode(
+        "You can specify additional Route Handler params for the preview."
+      ));
+      close.appendChild(document.createTextNode("X"));
+      
+      Event.stop(submit);
+    } else {
+      return true;
+    }
+  });

@@ -16,6 +16,17 @@ class RouteHandlerExtension < Radiant::Extension
     # We will store extracted from path params here
     Page.class_eval { attr_accessor :route_handler_params }
     SiteController.send :include, RouteHandler::SiteControllerExtensions
+    
+    # Add integration with Page Versioning and Webservices extensions - preview of
+    # Webservice with route_handler params.
+    if Object.const_defined?("PageVersioningExtension") && PageVersioning.enable_versioning
+      Admin::ResourceController.send :include, RouteHandler::ResourceControllerExtensions
+      Admin::PreviewController.send :include, RouteHandler::PreviewControllerExtensions
+      
+      admin.page.edit.add :form_bottom, "admin/route_handlers/preview_event_handler"
+      admin.snippet.edit.add :form_bottom, "admin/route_handlers/preview_event_handler"
+      admin.layout.edit.add :form_bottom, "admin/route_handlers/preview_event_handler"
+    end
   end
   
   def deactivate
