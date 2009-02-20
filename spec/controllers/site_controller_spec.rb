@@ -20,14 +20,6 @@ describe SiteController do
     )
   end
   
-  it "should open usual page" do
-    get :show_page, :url => [ 'page' ]
-    response.should be_success
-    response.body.should include('Hi there!')
-    assigns(:route_handler).should be_nil
-    assigns(:page).route_handler_params.should be_nil
-  end
-  
   it "should open page of route_handler" do
     get :show_page, :url => [ 'dailyoverview', 'today' ]
     response.should be_success
