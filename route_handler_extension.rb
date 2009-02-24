@@ -17,6 +17,8 @@ class RouteHandlerExtension < Radiant::Extension
     Page.class_eval { attr_accessor :route_handler_params }
     SiteController.send :include, RouteHandler::SiteControllerExtensions
     
+    ResponseCache.defaults[:expire_time] = 1.hour
+    
     # Add integration with Page Versioning and Webservices extensions - preview of
     # Webservice with route_handler params.
     if Object.const_defined?("PageVersioningExtension") && PageVersioning.enable_versioning
