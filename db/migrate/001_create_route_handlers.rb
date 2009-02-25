@@ -5,6 +5,7 @@ class CreateRouteHandlers < ActiveRecord::Migration
       t.string :fields, :null => false
       t.string :description
       t.integer :page_id, :null => false
+      t.text :derived_parameters
       
       t.timestamps
     end

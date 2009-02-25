@@ -99,7 +99,7 @@ namespace :spec do
   end
 end
 
-desc 'Generate documentation for the page_versioning extension.'
+desc 'Generate documentation for the route_handler extension.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'RouteHandlerExtension'
