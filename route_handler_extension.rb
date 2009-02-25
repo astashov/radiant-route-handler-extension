@@ -16,6 +16,7 @@ class RouteHandlerExtension < Radiant::Extension
     # We will store extracted from path params here
     Page.class_eval { attr_accessor :route_handler_params }
     SiteController.send :include, RouteHandler::SiteControllerExtensions
+    Page.send :include, RouteHandlerTags
     
     # Add integration with Page Versioning and Webservices extensions - preview of
     # Webservice with route_handler params.
