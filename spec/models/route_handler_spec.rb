@@ -93,5 +93,11 @@ describe RouteHandler do
       :something => 'another'
     }
   end
+  
+  it "should avoid constant matchers" do
+    RouteHandler.create!(:url => 'megapage\/(\w+)', :fields => 'type', :page => @page)
+    matched_handler = RouteHandler.match('megapage/sand')
+    matched_handler.page.route_handler_params.should == { :type => 'sand' }
+  end
 
 end
