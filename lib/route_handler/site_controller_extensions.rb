@@ -10,8 +10,8 @@ module RouteHandler::SiteControllerExtensions
             logger.info("\033[1;33mWe weren't be able to find static page, trying to find route handler\033[0m")
             @route_handler = RouteHandler.match(params[:url])
             if @route_handler
-              logger.info("\033[1;32mRoute Handler was found, use its page\033[0m")
               page = @route_handler.page
+              logger.info("\033[1;32mRoute Handler was found, use its page #{CGI::escape(page.title)}\033[0m")
             else
               logger.debug(
                 "\033[1;31mRoute Handler wasn't found\nYour url: " +
