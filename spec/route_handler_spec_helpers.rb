@@ -28,4 +28,21 @@ module RouteHandlerSpecHelpers
     )
   end
   
+  def derived_parameters
+<<EOM
+period:
+  -
+    if:
+      frequency: daily
+    value: day
+  - if:
+      frequency: _any_
+    value: other
+title:
+  -
+    value: ":name"
+something: another
+EOM
+  end
+  
 end

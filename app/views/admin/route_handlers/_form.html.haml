@@ -9,6 +9,9 @@
     %p.title
       %label{ :for => "route_handler_description" } Description
       = f.text_field 'description', :class => "textbox", :style => "width: 100%;"
+    %p.content
+      %label{ :for => "route_handler_derived_parameters" } Derived Parameters
+      = f.text_area 'derived_parameters', :class => "textarea", :style => "width: 100%;"
     %p
       %label{ :for => "route_handler_page_id" } Page
       = f.select 'page_id', Page.find(:all, :order => "title").map {|c| [ h(c.title), c.id ]}
