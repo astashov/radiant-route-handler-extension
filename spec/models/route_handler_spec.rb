@@ -99,5 +99,12 @@ describe RouteHandler do
     matched_handler = RouteHandler.match('megapage/sand')
     matched_handler.page.route_handler_params.should == { :type => 'sand' }
   end
+  
+  it "should select matchers correctly" do
+    handler = RouteHandler.create!(:url => 'some\/(\w+)', :fields => 'name', :page => @page)
+    RouteHandler.create!(:url => 'megapage\/(\w+)', :fields => 'type', :page => @page)
+    matched_handler = RouteHandler.match('some/sand')
+    matched_handler.page.route_handler_params.should == { :name => 'sand' }
+  end
 
 end

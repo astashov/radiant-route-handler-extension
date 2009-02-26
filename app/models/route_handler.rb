@@ -12,13 +12,12 @@ class RouteHandler < ActiveRecord::Base
   def self.match(path_params)
     handlers = find(:all)
     converted_params = params_conversion(path_params).join("/")
-    matched_params = ""
     handler = handlers.select do |h| 
-      matched_params = converted_params.match(h.url)
+      converted_params.match(h.url)
     end.first
     if handler
       # First match is full URL, we don't need it
-      matched_params = matched_params[1..-1]
+      matched_params = converted_params.match(handler.url)[1..-1]
       handler.set_path_params!(matched_params) 
       handler.set_derived_params!
     end
