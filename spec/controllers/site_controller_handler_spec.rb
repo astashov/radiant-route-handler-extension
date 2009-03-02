@@ -25,7 +25,8 @@ describe SiteController do
     response.should be_success
     response.body.should include('Hi there!')
     assigns(:route_handler).should == @route_handler
-    assigns(:page).route_handler_params.should == { :name => 'dailyoverview', :date => 'today' }
+    assigns(:page).route_handler_params[:name] == 'dailyoverview'
+    assigns(:page).route_handler_params[:date] == 'today'
   end
   
   it "should not show page if there are no matched pages and route handlers" do

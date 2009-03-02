@@ -40,6 +40,7 @@ class RouteHandler < ActiveRecord::Base
 
   def set_derived_params!
     params = parse(:yaml => self.derived_parameters.to_s, :input_params => self.page.route_handler_params)
+    params.merge!(derived_data_params) if self.page.route_handler_params[:date]
     self.page.route_handler_params.merge!(params)
   end
   
@@ -65,6 +66,36 @@ class RouteHandler < ActiveRecord::Base
       error = true if !yaml.blank? && yaml.is_a?(String)
       if error
         errors.add(:derived_parameters, "You should specify correct YAML format")
+      end
+    end
+    
+    
+    def derived_data_params
+      date = date_conversion(self.page.route_handler_params[:date])
+      {
+        :currentdate => date.strftime("%Y%m%d"),
+        :currentyear => date.year.to_s,
+        :currentmonth => date.strftime("%B"),
+        :currentday => date.day.to_s,
+        :tomorrow => (date + 1.day).strftime("%Y%m%d"),
+        :yesterday => (date - 1.day).strftime("%Y%m%d"),
+        :nextweek => (date + 1.week - ((date + 1.week).wday) + 1.day).strftime("%Y%m%d"),
+        :lastweek => (date - 1.week - ((date - 1.week).wday) + 1.day).strftime("%Y%m%d"),
+        :nextmonth => (date + 1.month - ((date + 1.month).day) + 1.day) .strftime("%Y%m%d"),
+        :lastmonth => (date - 1.month - ((date - 1.month).day) + 1.day) .strftime("%Y%m%d"),
+      }
+    end
+    
+    def date_conversion(given_date)
+      case
+      when given_date == 'today'; Date.today
+      when given_date == 'thismonth'; Date.civil(Date.today.year, Date.today.month, 1)
+      when given_date == 'lastmonth'; Date.civil(Date.today.year, Date.today.month - 1, 1)
+      when given_date == 'nextmonth'; Date.civil(Date.today.year, Date.today.month + 1, 1)
+      when given_date == 'tomorrow'; Date.today + 1.day
+      when given_date == 'yesterday'; Date.today - 1.day
+      when given_date.match(/\d+_days_ago/); Date.today - given_date.match(/(\d+)_days_ago/)[1].to_i.days
+      else; Date.civil(given_date[0..3].to_i, given_date[4..5].to_i, given_date[6..7].to_i) rescue Date.today
       end
     end
     

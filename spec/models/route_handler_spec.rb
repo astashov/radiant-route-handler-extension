@@ -46,22 +46,18 @@ describe RouteHandler do
     )
     route_handler.should be_valid
     matched_handler = RouteHandler.match('daily/overview/today')
-    matched_handler.page.route_handler_params.should == {
-      :frequency => 'daily',
-      :name => 'overview', 
-      :date => 'today'
-    }
+    matched_handler.page.route_handler_params[:frequency].should == 'daily'
+    matched_handler.page.route_handler_params[:name].should == 'overview'
+    matched_handler.page.route_handler_params[:date].should == 'today'
   end
   
   it "should match path" do
     handler = RouteHandler.create!(:url => '(\w+)\/(\w+)\/(\w+)', :fields => 'frequency,name,date', :page => @page)
     matched_handler = RouteHandler.match('daily/overview/today')
     matched_handler.should == handler
-    matched_handler.page.route_handler_params.should == {
-      :frequency => 'daily',
-      :name => 'overview', 
-      :date => 'today'
-    }
+    matched_handler.page.route_handler_params[:frequency].should == 'daily'
+    matched_handler.page.route_handler_params[:name].should == 'overview'
+    matched_handler.page.route_handler_params[:date].should == 'today'
     RouteHandler.match(%w{some some some}).should == handler
     RouteHandler.match('fengshui/love').should be_nil
   end  
@@ -74,23 +70,37 @@ describe RouteHandler do
       :derived_parameters => derived_parameters
     )
     matched_handler = RouteHandler.match('daily/overview/today')
-    matched_handler.page.route_handler_params.should == {
-      :frequency => 'daily',
-      :name => 'overview', 
-      :date => 'today',
-      :period => 'day',
-      :title => 'overview',
-      :something => 'another'
-    }
+    matched_handler.page.route_handler_params[:frequency].should == 'daily'
+    matched_handler.page.route_handler_params[:name].should == 'overview'
+    matched_handler.page.route_handler_params[:date].should == 'today'
+    matched_handler.page.route_handler_params[:period].should == 'day'
+    matched_handler.page.route_handler_params[:title].should == 'overview'
+    matched_handler.page.route_handler_params[:something].should == 'another'
     
     matched_handler = RouteHandler.match('weekly/overview/today')
-    matched_handler.page.route_handler_params.should == {
-      :frequency => 'weekly',
-      :name => 'overview', 
-      :date => 'today',
-      :period => 'other',
-      :title => 'overview',
-      :something => 'another'
+    matched_handler.page.route_handler_params[:frequency].should == 'weekly'
+    matched_handler.page.route_handler_params[:name].should == 'overview'
+    matched_handler.page.route_handler_params[:date].should == 'today'
+    matched_handler.page.route_handler_params[:period].should == 'other'
+    matched_handler.page.route_handler_params[:title].should == 'overview'
+    matched_handler.page.route_handler_params[:something].should == 'another'
+  end
+  
+  it "should set special date derived parameters" do
+    handler = RouteHandler.create!(:url => '(\w+)', :fields => 'date', :page => @page)
+    matched = RouteHandler.match('/20090304')
+    matched.page.route_handler_params.should == {
+      :date => '20090304',
+      :currentdate => '20090304',
+      :currentyear => '2009',
+      :currentmonth => 'March',
+      :currentday => '4',
+      :tomorrow => '20090305',
+      :yesterday => '20090303',
+      :nextweek => '20090309',
+      :lastweek => '20090223',
+      :nextmonth => '20090401',
+      :lastmonth => '20090201',
     }
   end
   
