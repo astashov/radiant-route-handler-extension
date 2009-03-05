@@ -4,22 +4,23 @@ class RouteHandler < ActiveRecord::Base
   validates_presence_of :url, :fields, :page_id
   validate :correct_yaml_in_derived_parameters
   
-  cattr_accessor :path_params
-  
   belongs_to :page
   
   
   def self.match(path_params)
     handlers = find(:all)
-    converted_params = params_conversion(path_params).join("/")
+    array_of_params = params_conversion(path_params)
+    string_of_params = array_of_params.join("/")
     handler = handlers.select do |h| 
-      converted_params.match(h.url)
+      string_of_params.match(h.url)
     end.first
     if handler
       # First match is full URL, we don't need it
-      matched_params = converted_params.match(handler.url)[1..-1]
-      handler.set_path_params!(matched_params) 
-      handler.set_derived_params!
+      matched_params = string_of_params.match(handler.url)[1..-1]
+      params = handler.get_path_params(matched_params)
+      params.merge!(handler.get_derived_params(params))
+      handler.set_another_page!(params)
+      handler.page.route_handler_params = params
     end
     handler
   end
@@ -30,20 +31,29 @@ class RouteHandler < ActiveRecord::Base
   end
   
   
-  def set_path_params!(params)
-    self.page.route_handler_params ||= {}
+  def get_path_params(params)
+    hash_of_params = {}
     fields.each_with_index do |field, index|
-      self.page.route_handler_params[field.to_sym] = params[index]
+      hash_of_params[field.to_sym] = params[index]
     end
+    hash_of_params
   end
 
 
-  def set_derived_params!
-    params = parse(:yaml => self.derived_parameters.to_s, :input_params => self.page.route_handler_params)
-    params.merge!(derived_data_params) if self.page.route_handler_params[:date]
-    self.page.route_handler_params.merge!(params)
+  def get_derived_params(given_params)
+    params = parse(:yaml => self.derived_parameters.to_s, :input_params => given_params)
+    params.merge!(derived_date_params(given_params[:date])) if given_params[:date]
+    given_params.merge!(params)
   end
   
+  
+      
+  def set_another_page!(params)
+    if params[:page_name]
+      page = Page.find_by_slug(params[:page_name])
+      self.page = page if page
+    end
+  end
   
   private
   
@@ -70,8 +80,8 @@ class RouteHandler < ActiveRecord::Base
     end
     
     
-    def derived_data_params
-      date = date_conversion(self.page.route_handler_params[:date])
+    def derived_date_params(given_date)
+      date = date_conversion(given_date)
       {
         :currentdate => date.strftime("%Y%m%d"),
         :currentyear => date.year.to_s,
@@ -98,5 +108,6 @@ class RouteHandler < ActiveRecord::Base
       else; Date.strptime(given_date, '%Y%m%d') rescue Date.today
       end
     end
+    
     
 end

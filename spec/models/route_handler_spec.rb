@@ -62,6 +62,15 @@ describe RouteHandler do
     RouteHandler.match('fengshui/love').should be_nil
   end  
   
+  it "should set page from params" do
+    another_page = Page.create!(:title => 'Another Page', :slug => 'another-page', 
+      :breadcrumb => 'Another Page', :status_id => '1'
+    )
+    RouteHandler.create!(:url => '(.*)\/(\d+)', :fields => 'page_name,page_number', :page => @page)
+    matched_handler = RouteHandler.match('another-page/1')
+    matched_handler.page.should == another_page
+  end
+  
   it "should set derived parameters" do
     handler = RouteHandler.create!(
       :url => '(\w+)\/(\w+)\/(\w+)', 
