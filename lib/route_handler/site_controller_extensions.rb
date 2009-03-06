@@ -6,7 +6,7 @@ module RouteHandler::SiteControllerExtensions
       
         def find_page_with_route_handler(*args)
           page = find_page_without_route_handler(*args)
-          unless page
+          if !page || page.is_a?(FileNotFoundPage)
             logger.info("\033[1;33mWe weren't be able to find static page, trying to find route handler\033[0m")
             @route_handler = RouteHandler.match(params[:url])
             if @route_handler

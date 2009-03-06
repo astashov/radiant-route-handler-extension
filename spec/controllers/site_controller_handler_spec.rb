@@ -6,9 +6,9 @@ describe SiteController do
     Page.destroy_all
     @page = Page.create!(
       :title => 'New Page',
-      :slug => 'page',
+      :slug => '/',
       :breadcrumb => 'New Page',
-      :status_id => '1',
+      :status_id => '100',
       :parts => [{:name => "body", :content => "Hi there!"}],
       :status_id => 100 # Published
     )
@@ -21,6 +21,22 @@ describe SiteController do
   end
   
   it "should open page of route_handler" do
+    get :show_page, :url => [ 'dailyoverview', 'today' ]
+    response.should be_success
+    response.body.should include('Hi there!')
+    assigns(:route_handler).should == @route_handler
+    assigns(:page).route_handler_params[:name] == 'dailyoverview'
+    assigns(:page).route_handler_params[:date] == 'today'
+  end
+  
+  it "should open page of route_handler if FileNotFoundPage is found" do
+    FileNotFoundPage.create!(
+      :title => 'Not found',
+      :slug => '404',
+      :breadcrumb => 'Not found',
+      :status_id => '100',
+      :parent => @page
+    )
     get :show_page, :url => [ 'dailyoverview', 'today' ]
     response.should be_success
     response.body.should include('Hi there!')
