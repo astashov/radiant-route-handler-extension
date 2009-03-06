@@ -4,9 +4,12 @@ module RouteHandler::RadiusExtension
     base.module_eval do
   
       def render_tag_with_route_handler(name, tag_binding)
-        tag_binding.attr.dup.each do |key, value|
-          if match = value.match(/_:(.*):_/)
-            tag_binding.attr[key].gsub!(/_:.*?:_/, tag_binding.locals.page.route_handler_params[match[1].to_sym])
+        # This check is needed for passing RadiantCMS specs
+        if tag_binding.is_a?(Radius::TagBinding)
+          tag_binding.attr.dup.each do |key, value|
+            if match = value.match(/_:(.*):_/)
+              tag_binding.attr[key].gsub!(/_:.*?:_/, tag_binding.locals.page.route_handler_params[match[1].to_sym])
+            end
           end
         end
         render_tag_without_route_handler(name, tag_binding)
