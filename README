@@ -16,11 +16,7 @@ and put somewhere in your 'Main Page' page:
 
   <r:snippet name="_:item:_" />
 
-then, if it can't find page, e.g., 'main-page/cars', then it will try to find
-Route Handler with URL RegExp that matches current URL. If it finds such Route Handler 
-(^(main-page\/(\w+)$), it will capture RegExp "groups" into the fields ('cars' into 'item'),
-open binded page ('Main Page') and substitute _:field:_ constructions by their values
-(<r:snippet name="_:item:_" /> will be converted to <r:snippet name="cars" />)
+then, if it can't find page, e.g., 'main-page/cars', then it will try to find Route Handler with URL RegExp that matches current URL. If it finds such Route Handler (^(main-page\/(\w+)$), it will capture RegExp "groups" into the fields ('cars' into 'item'), open binded page ('Main Page') and substitute _:field:_ constructions by their values (<r:snippet name="_:item:_" /> will be converted to <r:snippet name="cars" />).
 
 So, you can use one page for different URLs with dynamic parameters.
 
@@ -39,8 +35,7 @@ We used this extension for these tasks:
 
 = Paginating
 
-For paginating, create one page with page parts: 'page-1', 'page-2', etc.
-Then, create Route Handler with params:
+For paginating, create one page with page parts: 'page-1', 'page-2', etc. Then, create Route Handler with params:
 
   URL: ^article\/(\d+)$
   Fields: page_number
@@ -58,8 +53,7 @@ Then, you can get access to different pages by:
 
 = Horoscopes, Weather, Geoservice, etc.
 
-You can use this extension with 'Webservices' extension. E.g., we want to show
-coordinates of some place. For this, you need to install 'webservices' extension at first.
+You can use this extension with 'Webservices' extension. E.g., we want to show coordinates of some place. For this, you need to install 'webservices' extension at first.
 
 1. Create webservice. Something like this:
 
@@ -83,9 +77,7 @@ coordinates of some place. For this, you need to install 'webservices' extension
   Fields: city
   Page: 'Geo-webservice'
 
-You see that <r:webservice name="Geo" /> doesn't contain attribute q="_:city:_".
-This is because 'webservices' extension loads necessary Route Handler fields 
-automatically, if it can find them. But if you place this attribute, it will work too.
+You see that <r:webservice name="Geo" /> doesn't contain attribute q="_:city:_".  This is because 'webservices' extension loads necessary Route Handler fields automatically, if it can find them. But if you place this attribute, it will work too.
 
 Now, URL:
 
@@ -102,47 +94,39 @@ will show:
 
   You see coordinates of <r:route_param name="city" />
 
-2. You can substitute Route Handler Fields to any attribute of any Radius tag by
-capturing the field into _: and :_
+2. You can substitute Route Handler Fields to any attribute of any Radius tag by capturing the field into _: and :_
 
   <r:snippet name="_:field:_" />
 
 3. 'Webservices' extension can load Route Handler Fields automatically.
 
-4. If 'Page Versioning' extension is installed, you can specify Route Handler 
-Parameters for its previews (there special checkbox will be placed near 'Preview'
-button. If you check it, it will allow you to enter route hander fields, e.g.:
+4. If 'Page Versioning' extension is installed, you can specify Route Handler Parameters for its previews (there special checkbox will be placed near 'Preview' button. If you check it, it will allow you to enter route hander fields, e.g.:
 
   q=london&output=xml
 
 (it uses format of querystring parameters of GET query).
 
-5. You also can specify 'Derived parameters' - parameters that will be set automatically
-depending on Route Handler Fields. It uses format of 'Webservices' Rule Scheme.
+5. You also can specify 'Derived parameters' - parameters that will be set automatically depending on Route Handler Fields. It uses format of 'Webservices' Rule Scheme.
 
 Take a look at example of Route Handler
 
   URL: geo\/([a-zA-Z\-_]+)$
   Fields: city, show_capital
+  Derived Parameters:
+    country:
+      -
+        if:
+          city: moscow
+          show_capital: yes
+        value: Russia
+      -
+        if:
+          city: "_any_"
+        value: "Some another"
 
-  country:
-    -
-      if:
-        city: moscow
-        show_capital: yes
-      value: Russia
-    -
-      if:
-        city: "_any_"
-      value: "Some another"
+There are two special keys - 'if' and 'value'. The parser verifies rules in order. At first, it checks fields city and show_capital. If they are 'moscow' and 'yes' accordingly, it sets additional Field 'country' to 'Russia'. If they are not, it will follow to next rule.
 
-There are two special keys - 'if' and 'value'. The parser verifies rules
-in order. At first, it checks fields city and show_capital. If they are 'moscow'
-and 'yes' accordingly, it sets additional Field 'country' to 'Russia'. If they are
-not, it will follow to next rule.
-
-Next rule always be true, ("_any_" value will be true in any case). So, then
-'country' will be set to 'Some another'
+Next rule always be true, ("_any_" value will be true in any case). So, then 'country' will be set to 'Some another'
 
 You also can use
 
