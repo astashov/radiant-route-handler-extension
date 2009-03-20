@@ -1,0 +1,166 @@
+== Description
+
+This extension allows you to use dynamic parameters in your routes. E.g., you can use URLs:
+  
+  http://example.com/main-page/cars
+  http://example.com/main-page/fruits
+  http://example.com/main-page/furniture
+
+create Route Handler with RegExp:
+
+  URL: main-page\/(\w+)$
+  Fields: item
+  Page: Main Page
+
+and put somewhere in your 'Main Page' page:
+
+  <r:snippet name="_:item:_" />
+
+then, if it can't find page, e.g., 'main-page/cars', then it will try to find
+Route Handler with URL RegExp that matches current URL. If it finds such Route Handler 
+(^(main-page\/(\w+)$), it will capture RegExp "groups" into the fields ('cars' into 'item'),
+open binded page ('Main Page') and substitute _:field:_ constructions by their values
+(<r:snippet name="_:item:_" /> will be converted to <r:snippet name="cars" />)
+
+So, you can use one page for different URLs with dynamic parameters.
+
+
+== Installation
+
+(from the radiant application root)
+  
+  git clone git://github.com/astashov/radiant-route-handler-extension.git vendor/extensions/route_handler
+  rake RAILS_ENV=production db:migrate:extensions
+
+
+== Examples
+
+We used this extension for these tasks:
+
+= Paginating
+
+For paginating, create one page with page parts: 'page-1', 'page-2', etc.
+Then, create Route Handler with params:
+
+  URL: ^article\/(\d+)$
+  Fields: page_number
+  Page: Article
+
+And place in the 'Article' page:
+
+  <r:content part="page-_:page_number:_" />
+
+Then, you can get access to different pages by:
+
+  http://example.com/article/1
+  http://example.com/article/2
+  ...
+
+= Horoscopes, Weather, Geoservice, etc.
+
+You can use this extension with 'Webservices' extension. E.g., we want to show
+coordinates of some place. For this, you need to install 'webservices' extension at first.
+
+1. Create webservice. Something like this:
+
+  Name: Geo
+  Base Url: http://maps.google.com/maps/geo
+  Rule Scheme:
+    q: ":city"
+    output: xml
+    key: abcdefg
+
+2. Create page with title 'Geo-webservice':
+
+  <r:webservice name="Geo">
+    <r:webservice:content select=".//xmlns:coordinates" />
+  </r:webservice>
+  
+
+3. Create Route Handler
+    
+  URL: geo\/([a-zA-Z\-_]+)$
+  Fields: city
+  Page: 'Geo-webservice'
+
+You see that <r:webservice name="Geo" /> doesn't contain attribute q="_:city:_".
+This is because 'webservices' extension loads necessary Route Handler fields 
+automatically, if it can find them. But if you place this attribute, it will work too.
+
+Now, URL:
+
+  http://example.com/geo/london
+
+will show:
+
+  -0.1262362,51.5001524,0
+
+
+== Details
+
+1. You can show any of your Route Handler Fields by <r:route_param> tag. Example:
+
+  You see coordinates of <r:route_param name="city" />
+
+2. You can substitute Route Handler Fields to any attribute of any Radius tag by
+capturing the field into _: and :_
+
+  <r:snippet name="_:field:_" />
+
+3. 'Webservices' extension can load Route Handler Fields automatically.
+
+4. If 'Page Versioning' extension is installed, you can specify Route Handler 
+Parameters for its previews (there special checkbox will be placed near 'Preview'
+button. If you check it, it will allow you to enter route hander fields, e.g.:
+
+  q=london&output=xml
+
+(it uses format of querystring parameters of GET query).
+
+5. You also can specify 'Derived parameters' - parameters that will be set automatically
+depending on Route Handler Fields. It uses format of 'Webservices' Rule Scheme.
+
+Take a look at example of Route Handler
+
+  URL: geo\/([a-zA-Z\-_]+)$
+  Fields: city, show_capital
+
+  country:
+    -
+      if:
+        city: moscow
+        show_capital: yes
+      value: Russia
+    -
+      if:
+        city: "_any_"
+      value: "Some another"
+
+There are two special keys - 'if' and 'value'. The parser verifies rules
+in order. At first, it checks fields city and show_capital. If they are 'moscow'
+and 'yes' accordingly, it sets additional Field 'country' to 'Russia'. If they are
+not, it will follow to next rule.
+
+Next rule always be true, ("_any_" value will be true in any case). So, then
+'country' will be set to 'Some another'
+
+You also can use
+
+  country:
+    -
+      value: Russia
+
+Without 'if' condition, it always will be true. More shortened alias:
+
+  country: Russia
+
+Also, you can use Route Handler Fields in your Derived Parameters:
+
+  country: "Country of :city"
+
+if word is started from colon, it will be substituted by Route Handler Field.
+
+
+== Authors and Credits
+ 
+Written by Anton Astashov, with Brenton Cheng, for Astrology.com (a division of iVillage Inc.)

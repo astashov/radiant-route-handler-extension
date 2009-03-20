@@ -91,8 +91,8 @@ class RouteHandler < ActiveRecord::Base
         :yesterday => (date - 1.day).strftime("%Y%m%d"),
         :nextweek => (date + 1.week - ((date + 1.week).wday) + 1.day).strftime("%Y%m%d"),
         :lastweek => (date - 1.week - ((date - 1.week).wday) + 1.day).strftime("%Y%m%d"),
-        :nextmonth => (date + 1.month - ((date + 1.month).day) + 1.day) .strftime("%Y%m%d"),
-        :lastmonth => (date - 1.month - ((date - 1.month).day) + 1.day) .strftime("%Y%m%d"),
+        :nextmonth => (date + 1.month - ((date + 1.month).day) + 1.day).strftime("%Y%m%d"),
+        :lastmonth => (date - 1.month - ((date - 1.month).day) + 1.day).strftime("%Y%m%d"),
       }
     end
     
