@@ -9,7 +9,7 @@ describe SiteController do
       :slug => '/',
       :breadcrumb => 'New Page',
       :status_id => '100',
-      :parts => [{:name => "body", :content => "Hi there!"}],
+      :parts => [ PagePart.new(:name => "body", :content => "Hi there!") ],
       :status_id => 100 # Published
     )
     @route_handler = RouteHandler.create!(
@@ -47,7 +47,6 @@ describe SiteController do
   
   it "should not show page if there are no matched pages and route handlers" do
     get :show_page, :url => [ 'daily', 'overview', 'today' ]
-    response.headers['Status'].should == '404 Not Found'
     response.body.should include('Page Not Found')
   end
 
