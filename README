@@ -98,6 +98,15 @@ will show:
 
   <r:snippet name="_:field:_" />
 
+3. You can use if parameter == value and unless parameter == value conditions:
+
+  <r:if_route_param_equals name="city" value="">
+    Default city
+  </r:if_route_param_equals>
+  <r:unless_route_param_equals name="city" value="">
+    <r:route_param name="city" />
+  </r:unless_route_param_equals>
+
 3. 'Webservices' extension can load Route Handler Fields automatically.
 
 4. If 'Page Versioning' extension is installed, you can specify Route Handler Parameters for its previews (there special checkbox will be placed near 'Preview' button. If you check it, it will allow you to enter route hander fields, e.g.:
